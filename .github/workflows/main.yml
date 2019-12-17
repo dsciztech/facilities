@@ -1,0 +1,26 @@
+name: Queue issue to facilities
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  queue-issue-facilities:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: octokit/graphql-action@v2.x
+        id: queue-issue-facilities
+        with:
+          query: |
+            mutation release($node:String!) {
+              addProjectCard(
+                input: {
+                  contentId: $node,
+                  projectColumnId: "MDEzOlByb2plY3RDb2x1bW43MDg2MzUx"
+                }
+              ) {
+                clientMutationId
+              }
+            }
+          node: ${{ github.event.issue.node_id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_DSCIZTECHBOT }}
